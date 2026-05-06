@@ -68,10 +68,17 @@ void Game::Start()
 
 void Game::BindInputs()
 {
+<<<<<<< HEAD
+    ctx.input.Bind(MoveLeft, Input::Keyboard{sf::Keyboard::Scan::A});
+    ctx.input.Bind(MoveLeft, Input::Axis{sf::Joystick::Axis::X, -0.25f});
+
+    ctx.input.Bind(MoveRight, Input::Keyboard{sf::Keyboard::Scan::D});
+=======
     ctx.input.Bind(MoveLeft, Input::Keyboard{sf::Keyboard::Scan::Left});
     ctx.input.Bind(MoveLeft, Input::Axis{sf::Joystick::Axis::X, -0.25f});
 
     ctx.input.Bind(MoveRight, Input::Keyboard{sf::Keyboard::Scan::Right});
+>>>>>>> 6d7f25d139f8d9b186787eddafed35737a54a529
     ctx.input.Bind(MoveRight, Input::Axis{sf::Joystick::Axis::X, 0.25f});
 }
 
