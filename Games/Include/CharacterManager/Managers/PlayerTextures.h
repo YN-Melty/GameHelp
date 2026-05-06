@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics/Texture.hpp>
-
+#include <string>
 #include "CharacterManager/Managers/Config/PlayerStatsConfig.h"
 
 class PlayerTextures

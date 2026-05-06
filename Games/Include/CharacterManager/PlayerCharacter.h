@@ -2,11 +2,14 @@
 
 #include "CharacterManager/Managers/PlayerStats.h"
 #include "CharacterManager/Managers/PlayerTextures.h"
-#include "CharacterManager/Managers/Config/PlayerStatsConfig.h"
+#include <SFML/Graphics/Sprite.hpp>
 
 class PlayerCharacter
 {
+public:
+    PlayerCharacter();
+
     PlayerStats playerStats;
     PlayerTextures playerTexture;
-    PlayerCharacter() : playerStats(), playerTexture(PlayerStatsConfig::PlayerTexture) {}
+    sf::Sprite sprite;
 };
