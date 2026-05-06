@@ -7,9 +7,9 @@
 class PlayerCharacter
 {
 public:
-    PlayerCharacter();
-
     PlayerStats playerStats;
     PlayerTextures playerTexture;
     sf::Sprite sprite;
+
+    PlayerCharacter();
 };

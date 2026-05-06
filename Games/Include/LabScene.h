@@ -1,11 +1,12 @@
 #pragma once
+#include "Scene/Scene.h"
 
 namespace LabScene
 {
     class Lab : public Scene
     {
     public:
-        Lab();
+        Lab(EngineContext &);
 
         void Start();
         void Update();

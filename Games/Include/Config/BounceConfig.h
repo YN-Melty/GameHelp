@@ -19,11 +19,7 @@ namespace Bounce
     const sf::Color STATS_HIGH_SCORE_TEXT_COLOR(sf::Color::Yellow);
     const sf::Color STATS_LIVES_TEXT_COLOR(sf::Color::Red);
 
-<<<<<<< HEAD
     const std::string BACKGROUND_TEXTURE_FILENAME = "Background.png";
-=======
-    const std::string BACKGROUND_TEXTURE_FILENAME = "PurpleBackground.png";
->>>>>>> 6d7f25d139f8d9b186787eddafed35737a54a529
 
     const std::string BOUNCE_SOUND_FILENAME = "Bonus.mp3";
     const float BOUNCE_SOUND_VOLUME = 10;
