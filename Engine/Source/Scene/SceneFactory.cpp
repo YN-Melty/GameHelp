@@ -1,13 +1,13 @@
 #include "Scene/SceneFactory.h"
 
-#include "Bounce.h"
+#include "LabScene.h"
 
 namespace SceneFactory
 {
     Scenes CreateScenes(EngineContext &context)
     {
         Scenes scenes;
-        scenes.emplace("Bounce", std::make_unique<Bounce::Game>(context));
+        scenes.emplace("LabScene", std::make_unique<LabScene::Lab>(context));
         return scenes;
     }
 }
