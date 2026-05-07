@@ -1,11 +1,12 @@
 #include "CharacterManager/Managers/PlayerStats.h"
+#include <string>
 
 namespace PlayerStatsConfig
 {
-    int HP = 100;
-    float Gravity = 10;
-    int Speed = 50;
+    extern const int HP;
+    extern const float Gravity;
+    extern const int Speed;
 
-    std::string PlayerTexture = "Content/Textures/Player/somo.png";
-    std::string BackgroundTexture = "Content/Textures/Background.png";
+    extern const std::string PlayerTexture;
+    extern const std::string BackgroundTexture;
 }

@@ -1,9 +1,12 @@
 #include "LabScene.h"
 #include "CharacterManager/Managers/Config/PlayerStatsConfig.h"
 
+#include <iostream>
+#include <SFML/Graphics/Texture.hpp>
+
 using namespace LabScene;
 
-Lab::Lab(EngineContext &context) : Scene(context)
+Lab::Lab(EngineContext &context) : Scene(context), backgroundSprite(backgroundTexture)
 {
     Lab::InitBackground();
     Lab::InitChar();
@@ -11,9 +14,18 @@ Lab::Lab(EngineContext &context) : Scene(context)
 
 void Lab::InitChar()
 {
-    playerHitBox.setSize({64.f, 96.f});                   // width, height
-    playerHitBox.setOrigin(playerHitBox.getSize() / 2.f); // center it (optional)
-    playerHitBox.setPosition({200.f, 200.f});             // spawn position
+    player.sprite.setTexture(player.playerTexture.texture);
+
+    const auto texSize = player.playerTexture.texture.getSize();
+    player.sprite.setOrigin({texSize.x / 2.f, texSize.y / 2.f}); // center origin
+
+    player.sprite.setPosition({200.f, 200.f});
+    player.sprite.setScale({0.05f, 0.05f}); // much smaller for a 3k image
+    player.sprite.setColor(sf::Color::White);
+
+    playerHitBox.setSize({64.f, 96.f});
+    playerHitBox.setOrigin(playerHitBox.getSize() / 2.f);
+    playerHitBox.setPosition({200.f, 200.f}); // spawn position
 
     playerHitBox.setFillColor(sf::Color(0, 0, 0, 0)); // fully transparent fill
     playerHitBox.setOutlineColor(sf::Color::Green);   // border color
@@ -22,8 +34,14 @@ void Lab::InitChar()
 
 void Lab::InitBackground()
 {
-    background.setTexture(ctx.resources.FetchTexture(PlayerStatsConfig::BackgroundTexture));
-    background.setSize(gConfig.windowSize);
+    if (!backgroundTexture.loadFromFile("Content/Textures/Backgrounds/lab.png"))
+    {
+        std::cout << "FAILED to load background\n";
+        return;
+    }
+
+    backgroundSprite.setTexture(backgroundTexture);
+    backgroundSprite.setPosition({0.f, 0.f});
 }
 
 void Lab::Start()
@@ -37,7 +55,8 @@ void Lab::Update()
 void Lab::Render() const
 {
 
-    ctx.renderer.Draw(background);
+    ctx.renderer.Draw(backgroundSprite);
+    ctx.renderer.Draw(player.sprite);
     ctx.renderer.Draw(playerHitBox);
 
     /* ctx.renderer.Draw(background);

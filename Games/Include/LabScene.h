@@ -11,7 +11,8 @@ namespace LabScene
         PlayerCharacter player;
         sf::RectangleShape playerHitBox;
 
-        sf::RectangleShape background;
+        sf::Texture backgroundTexture;
+        sf::Sprite backgroundSprite;
 
     public:
         Lab(EngineContext &);

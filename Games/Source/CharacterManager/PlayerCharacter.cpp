@@ -1,9 +1,9 @@
 #include "CharacterManager/PlayerCharacter.h"
-#include "CharacterManager/Managers/Config/PlayerStatsConfig.h"
 
 PlayerCharacter::PlayerCharacter()
     : playerStats(),
-      playerTexture(PlayerStatsConfig::PlayerTexture)
+      playerTexture(PlayerStatsConfig::PlayerTexture),
+      sprite(playerTexture.texture)
 {
     sprite.setTexture(playerTexture.texture);
     // sprite.setPosition(...); // optional
