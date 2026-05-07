@@ -7,5 +7,5 @@ namespace PlayerStatsConfig
     int Speed = 50;
 
     std::string PlayerTexture = "Content/Textures/Player/somo.png";
-
+    std::string BackgroundTexture = "Content/Textures/Background.png";
 }
