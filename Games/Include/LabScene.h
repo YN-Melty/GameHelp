@@ -1,7 +1,6 @@
 #pragma once
 #include "Scene/Scene.h"
 #include "CharacterManager/PlayerCharacter.h"
-#include "CharacterManager/Managers/Config/PlayerStatsConfig.h"
 
 namespace LabScene
 {
@@ -12,12 +11,13 @@ namespace LabScene
         PlayerCharacter player;
         sf::RectangleShape playerHitBox;
 
-        sf::Sprite background;
+        sf::RectangleShape background;
 
     public:
         Lab(EngineContext &);
 
         void InitChar();
+        void InitBackground();
 
         void Start();
         void Update();
