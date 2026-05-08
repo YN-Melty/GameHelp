@@ -1,5 +1,5 @@
 #include "Core/EngineConfig.h"
-
+#include <SFML/Graphics.hpp>
 #include <nlohmann/json.hpp>
 
 #include <fstream>
@@ -12,7 +12,8 @@ EngineConfig::EngineConfig()
 
     nlohmann::json json = nlohmann::json::parse(file);
     windowTitle = json["windowTitle"];
-    windowSize = {json["windowSize"][0], json["windowSize"][1]};
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+    windowSize = {static_cast<float>(desktop.size.x), static_cast<float>(desktop.size.y)}; // windowSize = {json["windowSize"][0], json["windowSize"][1]};
     disableSfmlLogs = json["disableSfmlLogs"];
     maximumDeltaTime = sf::seconds(json["maximumDeltaTime"]);
     globalVolume = json["globalVolume"];

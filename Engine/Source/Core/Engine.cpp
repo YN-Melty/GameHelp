@@ -3,17 +3,20 @@
 #include "Core/Engine.h"
 #include "Core/EngineConfig.h"
 #include "Utils/Log.h"
+#include "InputActions.h"
+#include "Managers/InputManager.h"
 
 #include <SFML/Graphics.hpp>
 
 Engine::Engine() : window_(sf::VideoMode(sf::Vector2u(gConfig.windowSize)),
-                           gConfig.windowTitle),
+                           gConfig.windowTitle, 0, sf::State::Fullscreen),
                    context_(window_),
                    scenes_(SceneFactory::CreateScenes(context_)),
                    currentScene_(nullptr),
                    overlay_(context_.gui),
                    cursorWasVisible_(true)
 {
+
     window_.setIcon(sf::Image("Content/Textures/Icon.jpg"));
     window_.setMinimumSize(window_.getSize() / 2u);
     window_.setKeyRepeatEnabled(false);

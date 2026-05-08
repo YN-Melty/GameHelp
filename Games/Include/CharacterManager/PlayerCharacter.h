@@ -3,6 +3,7 @@
 #include "CharacterManager/Managers/PlayerStats.h"
 #include "CharacterManager/Managers/PlayerTextures.h"
 #include <SFML/Graphics/Sprite.hpp>
+#include "Scene/Scene.h"
 
 class PlayerCharacter
 {
@@ -11,5 +12,6 @@ public:
     PlayerTextures playerTexture;
     sf::Sprite sprite;
 
-    PlayerCharacter();
+    PlayerCharacter(EngineContext &);
+    void pcAction();
 };
