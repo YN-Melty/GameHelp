@@ -4,8 +4,9 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <string>
+#include "BaseCharacter.h"
 
-class FinalBoss : public Scene
+class FinalBoss : public Scene, public BaseCharacter
 {
 public:
     FinalBoss(EngineContext &context, const std::string &texturePath = FinalBossEnemyStats::FinalBossTexture);
