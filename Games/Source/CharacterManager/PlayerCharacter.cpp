@@ -1,4 +1,5 @@
 #include "CharacterManager/PlayerCharacter.h"
+#include "InputActions.h"
 
 PlayerCharacter::PlayerCharacter(EngineContext &context)
     : playerStats(),
@@ -9,46 +10,54 @@ PlayerCharacter::PlayerCharacter(EngineContext &context)
     // sprite.setPosition(...); // optional
 }
 
-void PlayerCharacter::pcAction()
+void PlayerCharacter::pcAction(const InputManager &input, float dt,
+                               float moveSpeed,
+                               float gravity,
+                               const sf::RectangleShape &playerHitBox,
+                               float leftWall, float rightWall, float ceiling, float floor)
 {
+
+    float halfWidth = playerHitBox.getSize().x / 2.f;
+    float halfHeight = playerHitBox.getSize().y / 2.f;
+
     sf::Vector2f move(0.f, 0.f);
-    if (ctx.input.Pressed(ACTION_MOVE_LEFT))
+    if (input.Pressed(ACTION_MOVE_LEFT))
         move.x -= moveSpeed * dt;
-    if (ctx.input.Pressed(ACTION_MOVE_RIGHT))
+    if (input.Pressed(ACTION_MOVE_RIGHT))
         move.x += moveSpeed * dt;
 
-    // Jump
-    if (ctx.input.Pressed(ACTION_JUMP) && onGround)
+    if (input.Pressed(ACTION_JUMP) && onGround)
     {
-        velocityY = -400.f;
+        velocityY = -400.f; // Or use a config value
         onGround = false;
     }
 
-    // Apply gravity
     velocityY += gravity * dt;
     move.y += velocityY * dt;
 
-    // Move
-    player.sprite.move(move);
-    playerHitBox.move(move);
+    // --- move both sprite and hitbox ---
+    sprite.move(move);
+    // If you store hitBox in PlayerCharacter, use hitBox.move(move);
+    // Else, let the scene update its playerHitBox
 
-    // Clamp X (walls)
-    sf::Vector2f pos = player.sprite.getPosition();
-    pos.x = std::max(LEFT_WALL + halfWidth, std::min(RIGHT_WALL - halfWidth, pos.x));
+    // --- Clamp X (walls) ---
+    sf::Vector2f pos = sprite.getPosition();
+    pos.x = std::max(leftWall + halfWidth, std::min(rightWall - halfWidth, pos.x));
 
-    // Clamp Y (floor/ceiling)
-    if (pos.y >= FLOOR - halfHeight)
+    // --- Clamp Y (floor/ceiling) ---
+    if (pos.y >= floor - halfHeight)
     {
-        pos.y = FLOOR - halfHeight;
+        pos.y = floor - halfHeight;
         velocityY = 0.f;
         onGround = true;
     }
-    if (pos.y <= CEILING + halfHeight)
+    if (pos.y <= ceiling + halfHeight)
     {
-        pos.y = CEILING + halfHeight;
+        pos.y = ceiling + halfHeight;
         velocityY = 0.f;
     }
 
-    player.sprite.setPosition(pos);
-    playerHitBox.setPosition(pos);
+    sprite.setPosition(pos);
+    // If you store hitBox in PlayerCharacter, do: hitBox.setPosition(pos);
+    // If not, scene must update hitBox to match player position after calling this.
 }

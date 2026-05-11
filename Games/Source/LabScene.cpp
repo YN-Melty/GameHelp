@@ -1,13 +1,13 @@
 #include "LabScene.h"
 #include "CharacterManager/Managers/Config/PlayerStatsConfig.h"
 #include "InputActions.h"
-
+#include "CharacterManager/PlayerCharacter.h"
 #include <iostream>
 #include <SFML/Graphics/Texture.hpp>
 
 using namespace LabScene;
 
-Lab::Lab(EngineContext &context) : Scene(context), backgroundSprite(backgroundTexture)
+Lab::Lab(EngineContext &context) : Scene(context), player(context), backgroundSprite(backgroundTexture)
 {
     Lab::InitBackground();
     Lab::InitChar();
@@ -57,60 +57,20 @@ void Lab::Start()
 
 void Lab::Update()
 {
-    float moveSpeed = 200.0f, dt = ctx.time.GetDeltaTime();
+    float moveSpeed = 200.0f;
+    float dt = ctx.time.GetDeltaTime();
+    float gravity = 800.f;
+
     float windowWidth = gConfig.windowSize.x;
     float windowHeight = gConfig.windowSize.y;
     float LEFT_WALL = 10.f, RIGHT_WALL = windowWidth - 10.f;
     float CEILING = 10.f, FLOOR = windowHeight - 100.f;
-    float halfWidth = playerHitBox.getSize().x / 2.f;
-    float halfHeight = playerHitBox.getSize().y / 2.f;
 
-    // --- horizontal movement ---
-    sf::Vector2f move(0.f, 0.f);
-    if (ctx.input.Pressed(ACTION_MOVE_LEFT))
-        move.x -= moveSpeed * dt;
-    if (ctx.input.Pressed(ACTION_MOVE_RIGHT))
-        move.x += moveSpeed * dt;
+    // Pass these to player.pcAction!
+    player.pcAction(ctx.input, dt, moveSpeed, gravity, playerHitBox, LEFT_WALL, RIGHT_WALL, CEILING, FLOOR);
 
-    // --- gravity & jump ---
-    static float velocityY = 0.f;
-    static bool onGround = false;
-    const float gravity = 800.f;
-
-    // Jump
-    if (ctx.input.Pressed(ACTION_JUMP) && onGround)
-    {
-        velocityY = -400.f;
-        onGround = false;
-    }
-
-    // Apply gravity
-    velocityY += gravity * dt;
-    move.y += velocityY * dt;
-
-    // Move
-    player.sprite.move(move);
-    playerHitBox.move(move);
-
-    // Clamp X (walls)
-    sf::Vector2f pos = player.sprite.getPosition();
-    pos.x = std::max(LEFT_WALL + halfWidth, std::min(RIGHT_WALL - halfWidth, pos.x));
-
-    // Clamp Y (floor/ceiling)
-    if (pos.y >= FLOOR - halfHeight)
-    {
-        pos.y = FLOOR - halfHeight;
-        velocityY = 0.f;
-        onGround = true;
-    }
-    if (pos.y <= CEILING + halfHeight)
-    {
-        pos.y = CEILING + halfHeight;
-        velocityY = 0.f;
-    }
-
-    player.sprite.setPosition(pos);
-    playerHitBox.setPosition(pos);
+    // After, you may need to update playerHitBox position here
+    playerHitBox.setPosition(player.sprite.getPosition());
 }
 void Lab::Render() const
 {

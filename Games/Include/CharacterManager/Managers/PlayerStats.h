@@ -8,19 +8,14 @@ class PlayerStats
 {
     std::string name;
     int hp;
-    float gravity;
     int speed;
-    const float velocityY;
-    static bool onGround;
-    const float gravity;
 
 public:
     PlayerStats(int hp = PlayerStatsConfig::HP,
-                const float gravity = PlayerStatsConfig::Gravity,
-                int speed = PlayerStatsConfig::Speed,
-                const float velocityY = 0.f);
+                int speed = PlayerStatsConfig::Speed);
 
     int getHP();
     int getGravity();
+    float getVelocityY();
     void setHP(int newHP);
 };

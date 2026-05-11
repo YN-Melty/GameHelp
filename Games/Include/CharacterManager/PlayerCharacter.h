@@ -12,6 +12,13 @@ public:
     PlayerTextures playerTexture;
     sf::Sprite sprite;
 
+    float velocityY = 0.f;
+    bool onGround = false;
+
     PlayerCharacter(EngineContext &);
-    void pcAction();
+    void pcAction(const InputManager &input, float dt,
+                  float moveSpeed,
+                  float gravity,
+                  const sf::RectangleShape &playerHitBox,
+                  float leftWall, float rightWall, float ceiling, float floor);
 };
