@@ -12,6 +12,7 @@ public:
     PlayerStats playerStats;
     PlayerTextures playerTexture;
     sf::Sprite sprite;
+    sf::RectangleShape playerHitBox;
 
     float velocityY = 0.f;
     bool onGround = false;
@@ -25,8 +26,13 @@ public:
                   const sf::RectangleShape &playerHitBox,
                   float leftWall, float rightWall, float ceiling, float floor);
 
+    void ApplyDamage(float amount) override;
+    void Attack(BaseCharacter &target) override;
+    void Update(float dt) override;
+    void Draw(sf::RenderWindow &window) override;
+    void initChar();
+
 private:
-    // Modular action handlers
     void handleMovement(const InputManager &input, float dt, float moveSpeed);
     void handleJump(const InputManager &input);
     void applyGravity(float gravity, float dt);

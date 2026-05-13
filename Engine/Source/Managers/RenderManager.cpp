@@ -2,9 +2,8 @@
 
 #include "Core/EngineConfig.h"
 
-RenderManager::RenderManager() : target_(sf::Vector2u(gConfig.windowSize)),
-                                 backgroundTexture_("Content/Textures/Background.png"),
-                                 background_(gConfig.windowSize)
+RenderManager::RenderManager() : target_(sf::Vector2u(gConfig.windowSize))
+
 {
     target_.setSmooth(true);
 

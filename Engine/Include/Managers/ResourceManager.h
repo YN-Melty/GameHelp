@@ -1,4 +1,4 @@
-#pragma Once
+#pragma once
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>

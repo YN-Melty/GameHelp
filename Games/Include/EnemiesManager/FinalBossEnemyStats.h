@@ -7,5 +7,5 @@ namespace FinalBossEnemyStats
     constexpr float Gravity = 650.f;
     constexpr int Speed = 120;
 
-    const std::string FinalBossTexture = "Content/Textures/Enemies/FinalBoss/FinalBoss.jpg";
+    const std::string texturePath = "Content/Textures/Enemies/FinalBoss/FinalBoss.jpg";
 }

@@ -18,4 +18,5 @@ public:
     int getGravity();
     float getVelocityY();
     void setHP(int newHP);
+    int getSpeed();
 };

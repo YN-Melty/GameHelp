@@ -17,3 +17,5 @@ void PlayerStats::setHP(int newHP)
 {
     hp = newHP;
 }
+
+int PlayerStats::getSpeed() { return speed; }

@@ -8,7 +8,30 @@ PlayerCharacter::PlayerCharacter(EngineContext &context)
       sprite(playerTexture.texture)
 {
     sprite.setTexture(playerTexture.texture);
-    // sprite.setPosition(...); // optional
+}
+
+void PlayerCharacter::ApplyDamage(float amount)
+{
+    int newHealth = playerStats.getHP() - static_cast<int>(amount);
+    if (newHealth < 0)
+        newHealth = 0;
+    playerStats.setHP(newHealth);
+}
+
+void PlayerCharacter::Attack(BaseCharacter &target)
+{
+    // Use speed as placeholder for attack damage (replace when you have real attack power)
+    target.ApplyDamage(1.0f);
+}
+
+void PlayerCharacter::Update(float dt)
+{
+    // Integrate with your framework/game loop
+}
+
+void PlayerCharacter::Draw(sf::RenderWindow &window)
+{
+    window.draw(sprite);
 }
 
 void PlayerCharacter::pcAction(const InputManager &input, float dt,
@@ -38,7 +61,7 @@ void PlayerCharacter::handleJump(const InputManager &input)
 {
     if (input.Pressed(ACTION_JUMP) && onGround)
     {
-        velocityY = -400.f; // Or use a config value
+        velocityY = -400.f;
         onGround = false;
     }
 }
@@ -71,4 +94,24 @@ void PlayerCharacter::WallCollisionDetection(const sf::RectangleShape &playerHit
     }
 
     sprite.setPosition(pos);
+}
+
+void PlayerCharacter::initChar()
+{
+    sprite.setTexture(playerTexture.texture);
+
+    const auto texSize = playerTexture.texture.getSize();
+    sprite.setOrigin({texSize.x / 2.f, texSize.y / 2.f}); // center origin
+
+    sprite.setPosition({200.f, 200.f});
+    sprite.setScale({0.05f, 0.05f}); // much smaller for a 3k image
+    sprite.setColor(sf::Color::White);
+
+    playerHitBox.setSize({64.f, 96.f});
+    playerHitBox.setOrigin(playerHitBox.getSize() / 2.f);
+    playerHitBox.setPosition({200.f, 200.f}); // spawn position
+
+    playerHitBox.setFillColor(sf::Color(0, 0, 0, 0)); // fully transparent fill
+    playerHitBox.setOutlineColor(sf::Color::Green);   // border color
+    playerHitBox.setOutlineThickness(2.f);
 }
