@@ -5,7 +5,7 @@ FinalBoss::FinalBoss(EngineContext &context, const std::string &texturePath)
     : BaseCharacter(),
 
       hp(FinalBossEnemyStats::HP),
-      gravity(FinalBossEnemyStats::Gravity),
+
       speed(FinalBossEnemyStats::Speed),
       finalBossTexture(),               // Default construct texture first
       finalBossSprite(finalBossTexture) // Construct sprite WITH the texture (even if not loaded yet)
@@ -80,13 +80,75 @@ void FinalBoss::Attack(BaseCharacter &target)
 void FinalBoss::Update(float dt)
 {
 }
+void FinalBoss::applyGravity(float gravity, float dt)
+{
+    velocityY += gravity * dt;
+    finalBossSprite.move({0.f, velocityY * dt});
+}
 
-sf::RectangleShape &FinalBoss::getHitBox()
+void FinalBoss::setHitBoxToSprite()
+{
+    FinalBossHitBox.setPosition(finalBossSprite.getPosition());
+}
+
+void FinalBoss::EnemyAction(float dt,
+                            float moveSpeed,
+                            float gravity,
+                            sf::RectangleShape &hitbox,
+                            float leftWall, float rightWall, float ceiling, float floor)
+{
+    handleMovement(dt, moveSpeed);
+    handleJump();
+    applyGravity(gravity, dt);
+    WallCollisionDetection(FinalBossHitBox, leftWall, rightWall, ceiling, floor);
+}
+
+void FinalBoss::handleJump()
+{ /*
+     if (onGround)
+     {
+         velocityY = -400.f;
+         onGround = false;
+     }
+         */
+}
+void FinalBoss::handleMovement(float dt, float moveSpeed)
+{
+    sf::Vector2f move(0.f, 0.f);
+
+    finalBossSprite.move(move);
+}
+void FinalBoss::WallCollisionDetection(sf::RectangleShape &hitbox,
+                                       float leftWall, float rightWall, float ceiling, float floor)
+
+{
+    float halfWidth = FinalBossHitBox.getSize().x / 2.f;
+    float halfHeight = FinalBossHitBox.getSize().y / 2.f;
+
+    sf::Vector2f pos = finalBossSprite.getPosition();
+    pos.x = std::max(leftWall + halfWidth, std::min(rightWall - halfWidth, pos.x));
+
+    if (pos.y >= floor - halfHeight)
+    {
+        pos.y = floor - halfHeight;
+        velocityY = 0.f;
+        onGround = true;
+    }
+    if (pos.y <= ceiling + halfHeight)
+    {
+        pos.y = ceiling + halfHeight;
+        velocityY = 0.f;
+    }
+
+    finalBossSprite.setPosition(pos);
+}
+
+const sf::RectangleShape &FinalBoss::getHitBox() const
 {
     return FinalBossHitBox;
 }
 
-const sf::RectangleShape &FinalBoss::getHitBox() const
+sf::RectangleShape &FinalBoss::getHitBox()
 {
     return FinalBossHitBox;
 }

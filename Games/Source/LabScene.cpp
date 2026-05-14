@@ -21,21 +21,20 @@ void Lab::InitChar()
 
 void Lab::InitBackground()
 {
-    std::cout << "hello";
     if (!backgroundTexture.loadFromFile(BackgroundPath))
     {
-        std::cerr << "Failed to load background image: " << BackgroundPath << std::endl;
+        std::cerr << "Failed to load background image!" << std::endl;
     }
 
-    float scaleX = float(gConfig.windowSize.x) / float(backgroundTexture.getSize().x);
-    float scaleY = float(gConfig.windowSize.y) / float(backgroundTexture.getSize().y);
+    backgroundSprite.setTexture(backgroundTexture, true);
+
+    float scaleX = static_cast<float>(gConfig.windowSize.x) / backgroundTexture.getSize().x;
+    float scaleY = static_cast<float>(gConfig.windowSize.y) / backgroundTexture.getSize().y;
     backgroundSprite.setScale({scaleX, scaleY});
 
-    backgroundSprite.setTexture(backgroundTexture);
-    backgroundSprite.setPosition({0.f, 0.f});
     backgroundSprite.setColor(sf::Color::White);
 
-    std::cout << "Trying to load background at: " << BackgroundPath << std::endl;
+    backgroundSprite.setPosition({0.f, 0.f}); // Top-left corner
 }
 
 void Lab::Start()
@@ -60,9 +59,10 @@ void Lab::Update()
     float CEILING = 10.f, FLOOR = windowHeight - 100.f;
 
     player.pcAction(ctx.input, dt, moveSpeed, gravity, player.playerHitBox, LEFT_WALL, RIGHT_WALL, CEILING, FLOOR);
-
     player.playerHitBox.setPosition(player.sprite.getPosition());
-    finalBoss.getHitBox().setPosition(finalBoss.getSprite().getPosition());
+
+    finalBoss.EnemyAction(dt, moveSpeed, gravity, finalBoss.getHitBox(), LEFT_WALL, RIGHT_WALL, CEILING, FLOOR);
+    finalBoss.setHitBoxToSprite();
 }
 void Lab::Render() const
 {

@@ -29,7 +29,7 @@ void RenderManager::ResetView()
 void RenderManager::BeginDrawing()
 {
     target_.clear();
-    Draw(background_);
+    // Draw(background_);
 }
 
 const sf::Texture &RenderManager::FinishDrawing()

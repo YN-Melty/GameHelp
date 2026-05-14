@@ -13,7 +13,7 @@ public:
 
 private:
     int hp;
-    float gravity;
+
     int speed;
 
     bool onGround = false;
@@ -34,7 +34,20 @@ public:
     const sf::Sprite &getSprite() const;
 
     void ApplyDamage(float amount) override;
+
     void Attack(BaseCharacter &target) override;
     void Update(float dt) override;
     void Draw(sf::RenderWindow &window) override;
+    void setHitBoxToSprite();
+
+    void EnemyAction(float dt,
+                     float moveSpeed,
+                     float gravity,
+                     sf::RectangleShape &hitbox,
+                     float leftWall, float rightWall, float ceiling, float floor);
+    void handleJump();
+    void handleMovement(float dt, float moveSpeed);
+    void WallCollisionDetection(sf::RectangleShape &hitbox,
+                                float leftWall, float rightWall, float ceiling, float floor);
+    void applyGravity(float gravity, float dt);
 };
