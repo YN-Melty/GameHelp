@@ -32,6 +32,7 @@ public:
     sf::RectangleShape &getHitBox();
     const sf::RectangleShape &getHitBox() const;
     const sf::Sprite &getSprite() const;
+    sf::Sprite &getSprite();
 
     void ApplyDamage(float amount) override;
 
@@ -41,12 +42,12 @@ public:
     void setHitBoxToSprite();
 
     void EnemyAction(float dt,
-                     float moveSpeed,
+
                      float gravity,
                      sf::RectangleShape &hitbox,
                      float leftWall, float rightWall, float ceiling, float floor);
     void handleJump();
-    void handleMovement(float dt, float moveSpeed);
+    void handleMovement(float dt);
     void WallCollisionDetection(sf::RectangleShape &hitbox,
                                 float leftWall, float rightWall, float ceiling, float floor);
     void applyGravity(float gravity, float dt);

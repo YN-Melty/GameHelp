@@ -13,6 +13,7 @@ public:
     PlayerTextures playerTexture;
     sf::Sprite sprite;
     sf::RectangleShape playerHitBox;
+    float moveSpeed = 500.0f;
 
     float velocityY = 0.f;
     bool onGround = false;
@@ -21,7 +22,7 @@ public:
 
     // Main update per frame
     void pcAction(const InputManager &input, float dt,
-                  float moveSpeed,
+
                   float gravity,
                   const sf::RectangleShape &playerHitBox,
                   float leftWall, float rightWall, float ceiling, float floor);
@@ -33,7 +34,7 @@ public:
     void initChar();
 
 private:
-    void handleMovement(const InputManager &input, float dt, float moveSpeed);
+    void handleMovement(const InputManager &input, float dt);
     void handleJump(const InputManager &input);
     void applyGravity(float gravity, float dt);
     void WallCollisionDetection(const sf::RectangleShape &playerHitBox,

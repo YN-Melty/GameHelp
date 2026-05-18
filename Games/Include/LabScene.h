@@ -27,6 +27,7 @@ namespace LabScene
         void Render() const;
         void OnPause(bool);
         void OnCleanup();
+        void fightersAntiCollision(PlayerCharacter &player, FinalBoss &boss);
     };
 
 };

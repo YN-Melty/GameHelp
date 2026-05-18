@@ -35,18 +35,18 @@ void PlayerCharacter::Draw(sf::RenderWindow &window)
 }
 
 void PlayerCharacter::pcAction(const InputManager &input, float dt,
-                               float moveSpeed,
+
                                float gravity,
                                const sf::RectangleShape &playerHitBox,
                                float leftWall, float rightWall, float ceiling, float floor)
 {
-    handleMovement(input, dt, moveSpeed);
+    handleMovement(input, dt);
     handleJump(input);
     applyGravity(gravity, dt);
     WallCollisionDetection(playerHitBox, leftWall, rightWall, ceiling, floor);
 }
 
-void PlayerCharacter::handleMovement(const InputManager &input, float dt, float moveSpeed)
+void PlayerCharacter::handleMovement(const InputManager &input, float dt)
 {
     sf::Vector2f move(0.f, 0.f);
     if (input.Pressed(ACTION_MOVE_LEFT))

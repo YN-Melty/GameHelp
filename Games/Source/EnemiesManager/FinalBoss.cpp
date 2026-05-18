@@ -92,12 +92,12 @@ void FinalBoss::setHitBoxToSprite()
 }
 
 void FinalBoss::EnemyAction(float dt,
-                            float moveSpeed,
+
                             float gravity,
                             sf::RectangleShape &hitbox,
                             float leftWall, float rightWall, float ceiling, float floor)
 {
-    handleMovement(dt, moveSpeed);
+    handleMovement(dt);
     handleJump();
     applyGravity(gravity, dt);
     WallCollisionDetection(FinalBossHitBox, leftWall, rightWall, ceiling, floor);
@@ -112,7 +112,7 @@ void FinalBoss::handleJump()
      }
          */
 }
-void FinalBoss::handleMovement(float dt, float moveSpeed)
+void FinalBoss::handleMovement(float dt)
 {
     sf::Vector2f move(0.f, 0.f);
 
@@ -154,6 +154,10 @@ sf::RectangleShape &FinalBoss::getHitBox()
 }
 
 const sf::Sprite &FinalBoss::getSprite() const
+{
+    return finalBossSprite;
+}
+sf::Sprite &FinalBoss::getSprite()
 {
     return finalBossSprite;
 }
