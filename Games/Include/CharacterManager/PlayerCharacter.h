@@ -32,6 +32,8 @@ public:
     void Update(float dt) override;
     void Draw(sf::RenderWindow &window) override;
     void initChar();
+    sf::RectangleShape &getHitBox() override;
+    sf::Sprite &getSprite() override;
 
 private:
     void handleMovement(const InputManager &input, float dt);

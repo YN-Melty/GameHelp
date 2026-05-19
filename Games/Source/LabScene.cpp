@@ -1,5 +1,5 @@
 #include "LabScene.h"
-
+#include "BaseCharacter.h"
 #include "InputActions.h"
 
 #include <iostream>
@@ -64,7 +64,7 @@ void Lab::Update()
     finalBoss.EnemyAction(dt, gravity, finalBoss.getHitBox(), LEFT_WALL, RIGHT_WALL, CEILING, FLOOR);
     finalBoss.setHitBoxToSprite();
 
-    fightersAntiCollision(player, finalBoss);
+    BaseCharacter::fightersAntiCollision(player, finalBoss);
 }
 void Lab::Render() const
 {
@@ -76,7 +76,7 @@ void Lab::Render() const
     ctx.renderer.Draw(finalBoss.getHitBox());
 }
 
-void Lab::fightersAntiCollision(PlayerCharacter &player, FinalBoss &boss)
+/* void Lab::fightersAntiCollision(PlayerCharacter &player, FinalBoss &boss)
 {
     float playerHalfWidth = player.playerHitBox.getSize().x / 2.f;
     float playerHalfHeight = player.playerHitBox.getSize().y / 2.f;
@@ -99,6 +99,8 @@ void Lab::fightersAntiCollision(PlayerCharacter &player, FinalBoss &boss)
     bool xOverlap = playerRight > bossLeft && playerLeft < bossRight;
     bool yOverlap = playerBottom > bossTop && playerTop < bossBottom;
 
+    int unstuckTimer = 300; // 16.67
+
     if (xOverlap && yOverlap)
     {
         float overlapX = std::min(playerRight, bossRight) - std::max(playerLeft, bossLeft);
@@ -118,12 +120,19 @@ void Lab::fightersAntiCollision(PlayerCharacter &player, FinalBoss &boss)
 
         if (playerOnTop)
         {
+
+            player.restartTimer();
             float slowPush = overlapX * slowPushFactor;
             if (playerPos.x < bossPos.x)
                 boss.getSprite().move({slowPush, 0.f});
             else
+
                 boss.getSprite().move({-slowPush, 0.f});
             boss.getHitBox().setPosition(boss.getSprite().getPosition());
+
+            if (playerOnTop && player.getTime().asMilliseconds() > unstuckTimer)
+            {
+            }
         }
         else if (bossOnTop)
         {
@@ -171,7 +180,7 @@ void Lab::fightersAntiCollision(PlayerCharacter &player, FinalBoss &boss)
         }
     }
 }
-
+*/
 void Lab::OnPause(bool paused)
 {
 }

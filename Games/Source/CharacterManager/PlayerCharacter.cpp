@@ -61,7 +61,7 @@ void PlayerCharacter::handleJump(const InputManager &input)
 {
     if (input.Pressed(ACTION_JUMP) && onGround)
     {
-        velocityY = -400.f;
+        velocityY = -800.f;
         onGround = false;
     }
 }
@@ -114,4 +114,13 @@ void PlayerCharacter::initChar()
     playerHitBox.setFillColor(sf::Color(0, 0, 0, 0)); // fully transparent fill
     playerHitBox.setOutlineColor(sf::Color::Green);   // border color
     playerHitBox.setOutlineThickness(2.f);
+}
+
+sf::RectangleShape &PlayerCharacter::getHitBox()
+{
+    return playerHitBox;
+}
+sf::Sprite &PlayerCharacter::getSprite()
+{
+    return sprite;
 }

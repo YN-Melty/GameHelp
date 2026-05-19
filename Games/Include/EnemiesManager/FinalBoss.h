@@ -29,7 +29,7 @@ public:
     void WallCollisionDetection(const sf::RectangleShape &playerHitBox,
                                 float leftWall, float rightWall, float ceiling, float floor);
 
-    sf::RectangleShape &getHitBox();
+    virtual sf::RectangleShape &getHitBox();
     const sf::RectangleShape &getHitBox() const;
     const sf::Sprite &getSprite() const;
     sf::Sprite &getSprite();
