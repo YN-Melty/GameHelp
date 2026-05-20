@@ -51,4 +51,6 @@ public:
     void WallCollisionDetection(sf::RectangleShape &hitbox,
                                 float leftWall, float rightWall, float ceiling, float floor);
     void applyGravity(float gravity, float dt);
+
+    bool isGrounded() const override;
 };

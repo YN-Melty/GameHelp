@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include "Core/EngineConfig.h"
+#include <iostream>
 
 bool BaseCharacter::isHitboxOverlapping(const sf::RectangleShape &a, const sf::RectangleShape &b)
 {
@@ -27,115 +28,194 @@ bool BaseCharacter::isHitboxOverlapping(const sf::RectangleShape &a, const sf::R
 
 void BaseCharacter::fightersAntiCollision(BaseCharacter &player, BaseCharacter &enemy)
 {
+    float allowCrossUpPush = 10.0f;
+
+    const float arenaLeft = 0.0f;
+    const float arenaRight = gConfig.windowSize.x;
     const float epsilon = 0.01f;
+    const float wallBuffer = 50.0f;
+    const float yOverlapThreshold = 8.0f; // Y overlap in pixels required to push
 
-    auto &playerBox = player.getHitBox();
-    auto &enemyBox = enemy.getHitBox();
-    sf::Vector2f playerCenter = playerBox.getPosition();
-    sf::Vector2f enemyCenter = enemyBox.getPosition();
-
-    float playerHalfWidth = playerBox.getSize().x / 2.0f;
-    float enemyHalfWidth = enemyBox.getSize().x / 2.0f;
-    float playerHalfHeight = playerBox.getSize().y / 2.0f;
-    float enemyHalfHeight = enemyBox.getSize().y / 2.0f;
-
-    bool overlap = isHitboxOverlapping(playerBox, enemyBox);
-
-    float leftWall = enemyHalfWidth;
-    float arenaRight = gConfig.windowSize.x;
-
-    bool playerAbove = (playerCenter.y + playerHalfHeight - epsilon <= enemyCenter.y - enemyHalfHeight);
-
-    float relX = playerCenter.x - enemyCenter.x;
-
-    auto canEnemyMoveRight = [&]() -> bool
+    // Helper: get rectangle properties for both
+    auto getBox = [](BaseCharacter &c, float &left, float &right, float &top, float &bottom, float &centerX, float &centerY, float &halfW, float &halfH)
     {
-        float rightWall = gConfig.windowSize.x - enemyHalfWidth;
-        return enemyCenter.x + epsilon < rightWall;
+        auto pos = c.getHitBox().getPosition();
+        auto size = c.getHitBox().getSize();
+        halfW = size.x * 0.5f;
+        halfH = size.y * 0.5f;
+        left = pos.x - halfW;
+        right = pos.x + halfW;
+        top = pos.y - halfH;
+        bottom = pos.y + halfH;
+        centerX = pos.x;
+        centerY = pos.y;
     };
 
-    bool enemyPinnedLeft = (enemyCenter.x - enemyHalfWidth - epsilon <= 0.f);
+    float pLeft, pRight, pTop, pBottom, pCenterX, pCenterY, pHalfW, pHalfH;
+    float eLeft, eRight, eTop, eBottom, eCenterX, eCenterY, eHalfW, eHalfH;
 
-    if (overlap)
+    getBox(player, pLeft, pRight, pTop, pBottom, pCenterX, pCenterY, pHalfW, pHalfH);
+    getBox(enemy, eLeft, eRight, eTop, eBottom, eCenterX, eCenterY, eHalfW, eHalfH);
+
+    // 1. Clamp to arena boundaries (no passing the walls)
+    if (pLeft < arenaLeft + wallBuffer)
+        player.getHitBox().setPosition({arenaLeft + wallBuffer + pHalfW, pCenterY});
+    if (pRight > arenaRight - wallBuffer)
+        player.getHitBox().setPosition({arenaRight - wallBuffer - pHalfW, pCenterY});
+    if (eLeft < arenaLeft + wallBuffer)
+        enemy.getHitBox().setPosition({arenaLeft + wallBuffer + eHalfW, eCenterY});
+    if (eRight > arenaRight - wallBuffer)
+        enemy.getHitBox().setPosition({arenaRight - wallBuffer - eHalfW, eCenterY});
+
+    // Refresh after wall snaps
+    getBox(player, pLeft, pRight, pTop, pBottom, pCenterX, pCenterY, pHalfW, pHalfH);
+    getBox(enemy, eLeft, eRight, eTop, eBottom, eCenterX, eCenterY, eHalfW, eHalfH);
+
+    // --- Special: push grounded character away from LEFT wall if other is 10+ px above ---
+    float gLeft, gRight, gTop, gBottom, gCenterX, gCenterY, gHalfW, gHalfH;
+    float oLeft, oRight, oTop, oBottom, oCenterX, oCenterY, oHalfW, oHalfH;
+
+    // Case 1: Player is grounded at left wall, enemy is above them
+    getBox(player, gLeft, gRight, gTop, gBottom, gCenterX, gCenterY, gHalfW, gHalfH);
+    getBox(enemy, oLeft, oRight, oTop, oBottom, oCenterX, oCenterY, oHalfW, oHalfH);
+
+    bool playerGroundedAtLeftWall = player.isGrounded() && (std::abs(gLeft - (arenaLeft + wallBuffer)) < 4.f);
+    bool enemyAbovePlayer = (oBottom < gTop - 10.0f);
+
+    if (playerGroundedAtLeftWall && enemyAbovePlayer)
     {
-        if (playerAbove && enemyPinnedLeft)
+        player.getHitBox().move({-allowCrossUpPush, 0.f}); // Drastic push right
+        std::cout << "PLAYER PUSHED FROM LEFT WALL!\n";
+    }
+
+    // Case 2: Enemy is grounded at left wall, player is above them
+    getBox(enemy, gLeft, gRight, gTop, gBottom, gCenterX, gCenterY, gHalfW, gHalfH);
+    getBox(player, oLeft, oRight, oTop, oBottom, oCenterX, oCenterY, oHalfW, oHalfH);
+
+    bool enemyGroundedAtLeftWall = enemy.isGrounded() && (std::abs(gLeft - (arenaLeft + wallBuffer)) < 4.f);
+    bool playerAboveEnemy = (oBottom < gTop - 10.0f);
+
+    if (enemyGroundedAtLeftWall && playerAboveEnemy)
+    {
+        enemy.getHitBox().move({allowCrossUpPush, 0.f}); // Drastic push right
+        std::cout << "ENEMY PUSHED FROM LEFT WALL!\n";
+    }
+
+    // --- Special: push grounded character away from RIGHT wall if other is 10+ px above ---
+
+    // Case 1: Player is grounded at right wall, enemy is above them
+    getBox(player, gLeft, gRight, gTop, gBottom, gCenterX, gCenterY, gHalfW, gHalfH);
+    getBox(enemy, oLeft, oRight, oTop, oBottom, oCenterX, oCenterY, oHalfW, oHalfH);
+
+    bool playerGroundedAtRightWall = player.isGrounded() && (std::abs(gRight - (arenaRight - wallBuffer)) < 4.f);
+    bool enemyAbovePlayerRight = (oBottom < gTop - 10.0f);
+
+    if (playerGroundedAtRightWall && enemyAbovePlayerRight)
+    {
+        player.getHitBox().move({allowCrossUpPush, 0.f}); // Drastic push left
+        std::cout << "PLAYER PUSHED FROM RIGHT WALL!\n";
+    }
+
+    // Case 2: Enemy is grounded at right wall, player is above them
+    getBox(enemy, gLeft, gRight, gTop, gBottom, gCenterX, gCenterY, gHalfW, gHalfH);
+    getBox(player, oLeft, oRight, oTop, oBottom, oCenterX, oCenterY, oHalfW, oHalfH);
+
+    bool enemyGroundedAtRightWall = enemy.isGrounded() && (std::abs(gRight - (arenaRight - wallBuffer)) < 4.f);
+    bool playerAboveEnemyRight = (oBottom < gTop - 10.0f);
+
+    if (enemyGroundedAtRightWall && playerAboveEnemyRight)
+    {
+        enemy.getHitBox().move({-allowCrossUpPush, 0.f}); // Drastic push left
+        std::cout << "ENEMY PUSHED FROM RIGHT WALL!\n";
+    }
+
+    // --- Special: push grounded character away from wall if other is 10+ px above ---
+
+    // Assumption: You have an isGrounded() method for your characters.
+    // For left and right wall
+
+    // Re-sync positions in case they were moved
+    getBox(player, pLeft, pRight, pTop, pBottom, pCenterX, pCenterY, pHalfW, pHalfH);
+    getBox(enemy, eLeft, eRight, eTop, eBottom, eCenterX, eCenterY, eHalfW, eHalfH);
+
+    float yOverlapAmount = std::min(pBottom, eBottom) - std::max(pTop, eTop);
+    bool ySignificantOverlap = yOverlapAmount > yOverlapThreshold;
+    bool xOverlap = (pRight > eLeft + epsilon) && (pLeft < eRight - epsilon);
+
+    // --- Vertical (Landing On Head) Split, only if significant Y overlap ---
+    if (ySignificantOverlap && xOverlap)
+    {
+        // Headstomp rule: determine who is on top
+        bool playerAbove = pTop < eTop;
+        BaseCharacter *top = playerAbove ? &player : &enemy;
+        BaseCharacter *bottom = playerAbove ? &enemy : &player;
+
+        float topLeft, topRight, topTop, topBottom, topCenterX, topCenterY, topHalfW, topHalfH;
+        float bottomLeft, bottomRight, bottomTop, bottomBottom, bottomCenterX, bottomCenterY, bottomHalfW, bottomHalfH;
+        getBox(*top, topLeft, topRight, topTop, topBottom, topCenterX, topCenterY, topHalfW, topHalfH);
+        getBox(*bottom, bottomLeft, bottomRight, bottomTop, bottomBottom, bottomCenterX, bottomCenterY, bottomHalfW, bottomHalfH);
+
+        float landingX = topCenterX - bottomLeft;
+        float bottomW = bottomRight - bottomLeft;
+
+        // Split by landing "pixel" (right/left band)
+        if (landingX >= 1.f && landingX <= 5.f)
         {
-            // --- SPECIAL CASE: Player attempts crossup, enemy is pinned ---
-
-            if (relX <= 0.f)
-            {
-                // Player wants to crossup by landing on left half but enemy can't move
-                // So, "break open the corner": move both right just enough so player is on left, enemy is on right, still touching
-
-                float minPlayerX = leftWall;
-                float minEnemyX = minPlayerX + playerHalfWidth + enemyHalfWidth + epsilon;
-
-                player.getSprite().setPosition({minPlayerX, player.getSprite().getPosition().y});
-                player.getHitBox().setPosition({minPlayerX, player.getHitBox().getPosition().y});
-                enemy.getSprite().setPosition({minEnemyX, enemy.getSprite().getPosition().y});
-                enemy.getHitBox().setPosition({minEnemyX, enemy.getHitBox().getPosition().y});
-            }
-            else
-            {
-                // Player lands on the right half: push player in front (right) of enemy
-                float targetPlayerX = enemyCenter.x + enemyHalfWidth + playerHalfWidth + epsilon;
-                float rightWallLimit = arenaRight - playerHalfWidth;
-                targetPlayerX = std::min(targetPlayerX, rightWallLimit);
-                player.getSprite().setPosition({targetPlayerX, player.getSprite().getPosition().y});
-                player.getHitBox().setPosition({targetPlayerX, player.getHitBox().getPosition().y});
-            }
-            // End special pin logic
+            top->getHitBox().setPosition({bottomLeft - topHalfW - epsilon, top->getHitBox().getPosition().y});
         }
-        else if (playerAbove)
+        else if (landingX >= (bottomW - 10.f) && landingX <= (bottomW - 6.f))
         {
-            // Standard "landing on top/crossup" logic for center stage (enemy is not pinned)
-            if (relX <= 0.f && canEnemyMoveRight())
-            {
-                // Move enemy right to make space for crossup
-                float targetEnemyX = playerCenter.x + enemyHalfWidth + playerHalfWidth + epsilon;
-                float rightWall = arenaRight - enemyHalfWidth;
-                targetEnemyX = std::min(targetEnemyX, rightWall);
-                enemy.getSprite().setPosition({targetEnemyX, enemy.getSprite().getPosition().y});
-                enemy.getHitBox().setPosition({targetEnemyX, enemy.getHitBox().getPosition().y});
-            }
-            else if (relX > 0.f && !canEnemyMoveRight())
-            {
-                // Enemy is right-pinned and can't move; push player to the front (applies for right-corner symmetry)
-                float targetPlayerX = enemyCenter.x + enemyHalfWidth + playerHalfWidth + epsilon;
-                float rightWallLimit = arenaRight - playerHalfWidth;
-                targetPlayerX = std::min(targetPlayerX, rightWallLimit);
-                player.getSprite().setPosition({targetPlayerX, player.getSprite().getPosition().y});
-                player.getHitBox().setPosition({targetPlayerX, player.getHitBox().getPosition().y});
-            }
-            // Else: nothing, physics will resolve side-landing
+            top->getHitBox().setPosition({bottomRight + topHalfW + epsilon, top->getHitBox().getPosition().y});
+        }
+    }
+
+    // --- Corner Crossup: only if both in right corner, full X overlap, Y overlap ---
+    getBox(player, pLeft, pRight, pTop, pBottom, pCenterX, pCenterY, pHalfW, pHalfH);
+    getBox(enemy, eLeft, eRight, eTop, eBottom, eCenterX, eCenterY, eHalfW, eHalfH);
+
+    float yOverlapAmount2 = std::min(pBottom, eBottom) - std::max(pTop, eTop);
+    bool ySignificantOverlap2 = yOverlapAmount2 > yOverlapThreshold;
+    bool xOverlapNow = (pRight > eLeft + epsilon) && (pLeft < eRight - epsilon);
+
+    float rightCornerThreshold = arenaRight - wallBuffer - std::max(pHalfW, eHalfW);
+    bool bothInRightCorner = (pRight >= rightCornerThreshold - epsilon && eRight >= rightCornerThreshold - epsilon);
+    bool perfectXOverlap = std::abs(pCenterX - eCenterX) < epsilon;
+
+    if (bothInRightCorner && perfectXOverlap && ySignificantOverlap2)
+    {
+        bool playerAbove = pTop < eTop;
+        BaseCharacter *bottom = playerAbove ? &enemy : &player;
+        float minStage = arenaRight - wallBuffer - bottom->getHitBox().getSize().x * 0.5f - epsilon;
+        bottom->getHitBox().setPosition({minStage, bottom->getHitBox().getPosition().y});
+    }
+
+    // --- Final: Standard X anti-overlap, only if significant Y overlap (prevents push-on-jump) ---
+    getBox(player, pLeft, pRight, pTop, pBottom, pCenterX, pCenterY, pHalfW, pHalfH);
+    getBox(enemy, eLeft, eRight, eTop, eBottom, eCenterX, eCenterY, eHalfW, eHalfH);
+
+    float lastYOverlapAmount = std::min(pBottom, eBottom) - std::max(pTop, eTop);
+    bool doXPush = lastYOverlapAmount > yOverlapThreshold;
+    bool finalXOverlap = (pRight > eLeft + epsilon) && (pLeft < eRight - epsilon);
+
+    if (finalXOverlap && doXPush)
+    {
+        float overlap = std::min(pRight, eRight) - std::max(pLeft, eLeft) + epsilon;
+        float push = overlap * 0.5f + epsilon;
+        if (pCenterX < eCenterX)
+        {
+            player.getHitBox().move({-push, 0.f});
+            enemy.getHitBox().move({push, 0.f});
         }
         else
         {
-            // --- STANDARD SIDE-BY-SIDE RESOLUTION (no stacking/floating allowed) ---
-            float separation = (playerHalfWidth + enemyHalfWidth) - std::abs(relX);
-            if (separation > 0.f)
-            {
-                float push = separation / 2.f + epsilon;
-                if (relX < 0)
-                {
-                    // player is left; move player left, enemy right
-                    player.getSprite().move({-push, 0});
-                    player.getHitBox().move({-push, 0});
-                    enemy.getSprite().move({push, 0});
-                    enemy.getHitBox().move({push, 0});
-                }
-                else
-                {
-                    // player is right of enemy; move player right, enemy left
-                    player.getSprite().move({push, 0});
-                    player.getHitBox().move({push, 0});
-                    enemy.getSprite().move({-push, 0});
-                    enemy.getHitBox().move({-push, 0});
-                }
-            }
+            player.getHitBox().move({push, 0.f});
+            enemy.getHitBox().move({-push, 0.f});
         }
     }
-    // No overlap: no correction needed
+
+    // Sync sprites
+    player.getSprite().setPosition(player.getHitBox().getPosition());
+    enemy.getSprite().setPosition(enemy.getHitBox().getPosition());
 }
 
 sf::Time BaseCharacter::restartTimer()

@@ -116,6 +116,8 @@ void PlayerCharacter::initChar()
     playerHitBox.setOutlineThickness(2.f);
 }
 
+bool PlayerCharacter::isGrounded() const { return onGround; }
+
 sf::RectangleShape &PlayerCharacter::getHitBox()
 {
     return playerHitBox;

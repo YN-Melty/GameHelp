@@ -34,6 +34,7 @@ public:
     void initChar();
     sf::RectangleShape &getHitBox() override;
     sf::Sprite &getSprite() override;
+    bool isGrounded() const override;
 
 private:
     void handleMovement(const InputManager &input, float dt);

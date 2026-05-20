@@ -15,6 +15,7 @@ namespace LabScene
         static constexpr const char *BackgroundPath = "Content/Textures/Background.png";
         sf::Texture backgroundTexture;
         sf::Sprite backgroundSprite;
+        float crossupTimer;
 
     public:
         Lab(EngineContext &);

@@ -7,7 +7,7 @@
 
 using namespace LabScene;
 
-Lab::Lab(EngineContext &context) : Scene(context), finalBoss(context), player(context), backgroundSprite(backgroundTexture)
+Lab::Lab(EngineContext &context) : Scene(context), crossupTimer(0.0f), finalBoss(context), player(context), backgroundSprite(backgroundTexture)
 {
     InitBackground();
     InitChar();
@@ -65,6 +65,8 @@ void Lab::Update()
     finalBoss.setHitBoxToSprite();
 
     BaseCharacter::fightersAntiCollision(player, finalBoss);
+    player.lastX = player.getHitBox().getPosition().x;
+    finalBoss.lastX = finalBoss.getHitBox().getPosition().x;
 }
 void Lab::Render() const
 {

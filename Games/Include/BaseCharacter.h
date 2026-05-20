@@ -11,6 +11,8 @@ class BaseCharacter
     bool isTouching = false;
 
 public:
+    float lastX = 0.0f;
+
     virtual ~BaseCharacter() = default;
     virtual sf::RectangleShape &getHitBox() = 0;
 
@@ -25,10 +27,11 @@ public:
     static bool isHitboxOverlapping(const sf::RectangleShape &a, const sf::RectangleShape &b);
 
     static void fightersAntiCollision(BaseCharacter &player, BaseCharacter &enemy);
-
     sf::Time restartTimer();
     sf::Time getTime() const;
 
     void isTouchingTrue();
     void isTouchingFalse();
+
+    virtual bool isGrounded() const = 0;
 };

@@ -143,6 +143,8 @@ void FinalBoss::WallCollisionDetection(sf::RectangleShape &hitbox,
     finalBossSprite.setPosition(pos);
 }
 
+bool FinalBoss::isGrounded() const { return onGround; }
+
 const sf::RectangleShape &FinalBoss::getHitBox() const
 {
     return FinalBossHitBox;
