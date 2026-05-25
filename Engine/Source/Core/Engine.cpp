@@ -13,7 +13,7 @@ Engine::Engine() : window_(sf::VideoMode(sf::Vector2u(gConfig.windowSize)),
                    context_(window_),
                    scenes_(SceneFactory::CreateScenes(context_)),
                    currentScene_(nullptr),
-                   overlay_(context_.gui),
+                   overlay_(),
                    cursorWasVisible_(true)
 {
 
@@ -32,7 +32,7 @@ Engine::Engine() : window_(sf::VideoMode(sf::Vector2u(gConfig.windowSize)),
     LOG_INFO("Window created");
     // LOG_INFO("Random int: {}", context_.random.Int(1, 10));
 
-    context_.scenes.ChangeScene("StartMenu"); // here to change start Scene
+    context_.scenes.ChangeScene("StartScene"); // here to change start Scene
 }
 
 bool Engine::IsRunning() const

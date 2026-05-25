@@ -17,6 +17,8 @@ namespace StartMenu
         static constexpr const char *startButtonPath = "Content/Textures/StartMenu/startButton.png";
         static constexpr const char *startButtonPressed = "Content/Textures/StartMenu/startButtonPressed.png";
 
+        tgui::Button::Ptr startButton_;
+
     public:
         StartScreen(EngineContext &);
 

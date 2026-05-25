@@ -1,10 +1,10 @@
-#include "Core/Overlay.h"
+// Overlay.cpp
 
+#include "Core/Overlay.h"
+#include <magic_enum/magic_enum.hpp>
 #include <utility>
 
-#include <magic_enum/magic_enum.hpp>
-
-Overlay::Overlay(GuiManager &gui)
+void Overlay::Init(GuiManager &gui)
 {
     group_ = tgui::Group::create();
     group_->setVisible(false);
@@ -22,12 +22,13 @@ std::optional<OverlaySelection> Overlay::FetchSelection()
 
 void Overlay::SetVisible(bool visible)
 {
-    group_->setVisible(visible);
+    if (group_)
+        group_->setVisible(visible);
 }
 
 bool Overlay::IsVisible() const
 {
-    return group_->isVisible();
+    return group_ && group_->isVisible();
 }
 
 void Overlay::InitBackground()
