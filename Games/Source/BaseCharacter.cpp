@@ -112,7 +112,7 @@ void BaseCharacter::fightersAntiCollision(BaseCharacter &player, BaseCharacter &
 
     if (playerGroundedAtRightWall && enemyAbovePlayerRight)
     {
-        player.getHitBox().move({allowCrossUpPush, 0.f}); // Drastic push left
+        player.getHitBox().move({-allowCrossUpPush, 0.f}); // Drastic push left
         std::cout << "PLAYER PUSHED FROM RIGHT WALL!\n";
     }
 

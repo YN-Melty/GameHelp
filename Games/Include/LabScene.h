@@ -1,5 +1,4 @@
 #pragma once
-#include "Scene/Scene.h"
 #include "CharacterManager/PlayerCharacter.h"
 #include "EnemiesManager/FinalBoss.h"
 
@@ -28,7 +27,6 @@ namespace LabScene
         void Render() const;
         void OnPause(bool);
         void OnCleanup();
-        // void fightersAntiCollision(PlayerCharacter &player, FinalBoss &boss) override;
-    };
+        };
 
 };
