@@ -1,6 +1,7 @@
 #include "LabScene.h"
 #include "BaseCharacter.h"
 #include "InputActions.h"
+#include "Core/Engine.h"
 
 #include <iostream>
 #include <SFML/Graphics/Texture.hpp>

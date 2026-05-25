@@ -9,7 +9,6 @@ class Engine
 {
 private:
     sf::RenderWindow window_;
-    EngineContext context_;
 
     SceneFactory::Scenes scenes_;
     Scene *currentScene_;
@@ -18,6 +17,8 @@ private:
     bool cursorWasVisible_;
 
 public:
+    EngineContext context_;
+
     Engine();
     bool IsRunning() const;
 
@@ -26,8 +27,6 @@ public:
     void Render();
 
 private:
-    friend EngineVisitor;
-
     void EventWindowClose();
     void EventWindowResized(sf::Vector2u size);
     void EventWindowFocusLost();
