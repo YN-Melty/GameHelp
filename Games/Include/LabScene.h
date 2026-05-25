@@ -22,11 +22,11 @@ namespace LabScene
         void InitChar();
         void InitBackground();
 
-        void Start();
-        void Update();
-        void Render() const;
+        void Start() override;
+        void Update() override;
+        void Render() const override;
         void OnPause(bool);
         void OnCleanup();
-        };
+    };
 
 };

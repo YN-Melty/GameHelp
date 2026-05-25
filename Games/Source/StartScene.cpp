@@ -5,6 +5,7 @@ using namespace StartMenu;
 
 StartScreen::StartScreen(EngineContext &context) : Scene(context), backgroundSprite(backgroundTexture), startButtonSprite(startButtonTexture)
 {
+
     InitBackground();
 }
 
@@ -35,4 +36,26 @@ void StartScreen::StartGame()
     // startButton->getRenderer()->setTextureHover(".../myButtonHover.png");
     startButton->onPress([this]()
                          { this->ctx.scenes.ChangeScene("LabScene"); });
+}
+
+/*void StartScreen::Render() const
+{
+
+}*/
+void StartScreen::OnPause(bool)
+{
+}
+
+void StartScreen::Start()
+{
+    ctx.cursor.SetVisible(false);
+    StartGame();
+}
+
+void StartScreen::Update()
+{
+}
+void StartScreen::Render() const
+{
+    ctx.renderer.Draw(backgroundSprite);
 }

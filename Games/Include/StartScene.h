@@ -22,9 +22,13 @@ namespace StartMenu
 
         void InitBackground();
         void StartGame();
-        void Update();
-        void Render() const;
-        void OnPause(bool);
+
+        // void Render() const;
+
+        void OnPause(bool) override;
+        void Start() override;
+        void Update() override;
+        void Render() const override;
     };
 
 };

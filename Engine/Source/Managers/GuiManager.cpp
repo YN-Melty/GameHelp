@@ -8,6 +8,7 @@ GuiManager::GuiManager(sf::RenderWindow &window) : window_(window), gui_(window)
 
     gui_.setTabKeyUsageEnabled(true);
     gui_.setFont("Content/Fonts/Montserrat.ttf");
+    gui_.setWindow(window_);
 }
 
 void GuiManager::ProcessEvent(const sf::Event &event)

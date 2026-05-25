@@ -32,7 +32,7 @@ Engine::Engine() : window_(sf::VideoMode(sf::Vector2u(gConfig.windowSize)),
     LOG_INFO("Window created");
     // LOG_INFO("Random int: {}", context_.random.Int(1, 10));
 
-    context_.scenes.ChangeScene("LabScene");
+    context_.scenes.ChangeScene("StartMenu"); // here to change start Scene
 }
 
 bool Engine::IsRunning() const
