@@ -59,11 +59,6 @@ void Engine::ProcessEvents()
             currentScene_->OnEvent(*event);
         }
     }
-
-    if (const auto selection = overlay_.FetchSelection())
-    {
-        EventOverlaySelect(*selection);
-    }
 }
 
 void Engine::Update()
@@ -104,13 +99,13 @@ void Engine::EventWindowResized(sf::Vector2u size)
 
 void Engine::EventWindowFocusLost()
 {
-    currentScene_->OnPause(true);
+
     LOG_INFO("Window focus lost");
 }
 
 void Engine::EventWindowFocusGained()
 {
-    currentScene_->OnPause(overlay_.IsVisible());
+
     LOG_INFO("Window focus gained");
 }
 
@@ -158,41 +153,4 @@ void Engine::EventSceneMenuReturn()
 
     context_.cursor.SetVisible(true);
     context_.cursor.SetSpeed(gConfig.cursorSpeed);
-}
-
-void Engine::EventOverlayPauseToggle()
-{
-    const bool overlayVisible = !overlay_.IsVisible();
-    overlay_.SetVisible(overlayVisible);
-
-    const bool cursorVisible = context_.cursor.IsVisible();
-    context_.cursor.SetVisible(overlayVisible || cursorWasVisible_);
-    cursorWasVisible_ = cursorVisible;
-
-    currentScene_->OnPause(overlayVisible);
-    LOG_INFO(overlayVisible ? "Game paused" : "Game resumed");
-}
-
-void Engine::EventOverlaySelect(OverlaySelection selection)
-{
-    switch (selection)
-    {
-    case OverlaySelection::Resume:
-        EventOverlayPauseToggle();
-        break;
-
-    case OverlaySelection::Restart:
-        EventSceneRestart();
-        break;
-
-    case OverlaySelection::Menu:
-        EventSceneMenuReturn();
-        break;
-
-    case OverlaySelection::Quit:
-        EventWindowClose();
-        break;
-    default:
-        break;
-    }
 }

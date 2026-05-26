@@ -39,6 +39,4 @@ private:
     void EventSceneChange(const std::string &name);
     void EventSceneRestart();
     void EventSceneMenuReturn();
-    void EventOverlayPauseToggle();
-    void EventOverlaySelect(OverlaySelection selection);
 };
