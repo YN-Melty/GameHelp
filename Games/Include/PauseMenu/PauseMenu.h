@@ -12,12 +12,11 @@ enum class PauseMenuSelection
     Quit
 };
 
-class Overlay
+class PauseMenu
 {
 public:
-    Overlay() = default; // Now a trivial constructor, does NOT create widgets
+    PauseMenu() = default;
 
-    // This method actually sets up the TGUI widgets.
     void Init(GuiManager &gui);
 
     std::optional<PauseMenuSelection> FetchSelection();

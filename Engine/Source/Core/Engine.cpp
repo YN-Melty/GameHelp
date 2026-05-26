@@ -13,7 +13,7 @@ Engine::Engine() : window_(sf::VideoMode(sf::Vector2u(gConfig.windowSize)),
                    context_(window_),
                    scenes_(SceneFactory::CreateScenes(context_)),
                    currentScene_(nullptr),
-                   overlay_(),
+
                    cursorWasVisible_(true)
 {
 
@@ -53,11 +53,6 @@ void Engine::ProcessEvents()
         context_.gui.ProcessEvent(*event);
 
         currentScene_->OnEvent(*event);
-
-        if (!overlay_.IsVisible())
-        {
-            currentScene_->OnEvent(*event);
-        }
     }
 }
 
@@ -65,11 +60,6 @@ void Engine::Update()
 {
     context_.time.Update();
     context_.cursor.Update(context_.time.GetDeltaTime());
-
-    if (!overlay_.IsVisible())
-    {
-        currentScene_->Update();
-    }
 }
 
 void Engine::Render()
@@ -142,13 +132,13 @@ void Engine::EventSceneChange(const std::string &name)
 
 void Engine::EventSceneRestart()
 {
-    overlay_.SetVisible(false);
+
     context_.scenes.RestartCurrentScene();
 }
 
 void Engine::EventSceneMenuReturn()
 {
-    overlay_.SetVisible(false);
+
     context_.scenes.ChangeScene("Menu");
 
     context_.cursor.SetVisible(true);
