@@ -1,6 +1,7 @@
 #pragma once
 #include "CharacterManager/PlayerCharacter.h"
 #include "EnemiesManager/FinalBoss.h"
+#include "PauseMenu/PauseMenu.h"
 
 namespace LabScene
 {
@@ -15,6 +16,8 @@ namespace LabScene
         sf::Texture backgroundTexture;
         sf::Sprite backgroundSprite;
         float crossupTimer;
+
+        PauseMenu pauseMenu;
 
     public:
         Lab(EngineContext &);

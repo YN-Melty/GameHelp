@@ -36,3 +36,21 @@ const bool InputManager::Pressed(const Input::Axis &binding) const
     const float axis = sf::Joystick::getAxisPosition(binding.id, binding.axis) / 100;
     return (binding.threshold >= 0) ? axis > binding.threshold : axis < binding.threshold;
 }
+
+void InputManager::UpdateStates()
+{
+    previousStates_ = currentStates_;
+    for (const auto &entry : bindings_)
+    {
+        int action = entry.first;
+        currentStates_[action] = Pressed(action);
+    }
+}
+
+bool InputManager::JustPressed(int action) const
+{
+    auto curr = currentStates_.find(action);
+    auto prev = previousStates_.find(action);
+    return curr != currentStates_.end() && curr->second &&
+           (prev == previousStates_.end() || !prev->second);
+}

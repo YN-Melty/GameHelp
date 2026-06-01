@@ -7,11 +7,16 @@ class InputManager
 {
 private:
     std::unordered_multimap<int, Input::Binding> bindings_;
+    std::unordered_map<int, bool> previousStates_;
+    std::unordered_map<int, bool> currentStates_;
 
 public:
     void Bind(int action, const Input::Binding &binding);
     bool Pressed(int action) const;
     void Clear();
+
+    void UpdateStates();
+    bool JustPressed(int action) const;
 
 private:
     bool Pressed(const Input::Keyboard &) const;

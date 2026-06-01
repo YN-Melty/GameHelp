@@ -1,8 +1,10 @@
 #pragma once
 
+#include "Core/EngineContext.h"
 #include <TGUI/TGUI.hpp>
 #include "Managers/GuiManager.h"
 #include <optional>
+#include "InputActions.h"
 
 enum class PauseMenuSelection
 {
@@ -14,6 +16,8 @@ enum class PauseMenuSelection
 
 class PauseMenu
 {
+    bool visible_ = false;
+
 public:
     PauseMenu() = default;
 
@@ -30,3 +34,5 @@ private:
     void InitBackground();
     void InitButtons();
 };
+// global function to handle pause
+bool HandlePauseAction(EngineContext &ctx, PauseMenu &pauseMenu);

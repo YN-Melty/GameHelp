@@ -12,4 +12,5 @@ constexpr int ACTION_MENU_UP = 7;
 constexpr int ACTION_MENU_DOWN = 8;
 constexpr int ACTION_MENU_CONFIRM = 9;
 constexpr int ACTION_MENU_BACK = 10;
+constexpr int ACTION_PAUSE = 11;
 // ...etc

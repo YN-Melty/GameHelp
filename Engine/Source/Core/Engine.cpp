@@ -58,8 +58,11 @@ void Engine::ProcessEvents()
 
 void Engine::Update()
 {
+    context_.input.UpdateStates();
     context_.time.Update();
     context_.cursor.Update(context_.time.GetDeltaTime());
+    if (currentScene_)
+        currentScene_->Update();
 }
 
 void Engine::Render()
