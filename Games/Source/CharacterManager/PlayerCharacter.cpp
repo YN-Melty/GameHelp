@@ -2,7 +2,7 @@
 #include "InputActions.h"
 
 PlayerCharacter::PlayerCharacter(EngineContext &context)
-    : BaseCharacter(),
+    : BaseCharacter(10, 10, 10, 10),
       playerStats(),
       playerTexture(PlayerStatsConfig::PlayerTexture),
       sprite(playerTexture.texture)

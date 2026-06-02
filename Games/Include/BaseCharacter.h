@@ -13,6 +13,18 @@ class BaseCharacter
 public:
     float lastX = 0.0f;
 
+    int HP, MaxHP, Meter, MaxMeter;
+
+    float getHP() { return HP; }
+    float getMaxHP() { return MaxHP; }
+    void setHP(float set) { HP = set; }
+    void setMaxHP(float set) { MaxHP = set; }
+
+    float getMeter() { return Meter; }
+    float getMaxMeter() { return MaxMeter; }
+    void setMaxMeter(float set) { MaxMeter = set; }
+    void setMeter(float set) { Meter = set; }
+
     virtual ~BaseCharacter() = default;
     virtual sf::RectangleShape &getHitBox() = 0;
 

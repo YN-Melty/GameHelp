@@ -62,12 +62,12 @@ bool HandlePauseAction(EngineContext &ctx, PauseMenu &pauseMenu)
     if (ctx.input.JustPressed(ACTION_PAUSE))
     {
         pauseMenu.SetVisible(!pauseMenu.IsVisible());
-        ctx.cursor.SetVisible(true);
+        ctx.cursor.SetVisible(false);
     }
 
     if (pauseMenu.IsVisible())
     {
-        // handle selection here if desired
+        ctx.cursor.SetVisible(true);
         return true; // Let caller know we are paused
     }
     return false; // Not paused, run normal game logic
